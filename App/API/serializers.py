@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group, User
+from API.models import Packets, Agents
 from rest_framework import serializers
 
 
@@ -12,3 +13,13 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
+
+class PacketsSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Packets
+        fields = ['src_ip', 'dst_ip', 'src_mac', 'dst_mac', 'src_port', 'dst_port', 'data', 'timestamp']
+
+class AgentsSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Agents
+        fields = ['agent_ip', 'agent_port', 'data_count']

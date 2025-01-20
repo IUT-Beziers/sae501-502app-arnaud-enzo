@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% include "dashboard/header.html" %}
+
+<table id="myTable" class="display">
+    <thead>
+        <tr>
+            <th>src_ip</th>
+            <th>dst_ip</th>
+            <th>src_mac</th>
+            <th>dst_mac</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>192.168.2.1</td>
+            <td>192.168.2.2</td>
+            <td>00:1A:2B:3C:4D:5E</td>
+            <td>00:1F:2E:3D:4C:5B</td>
+        </tr>
+        <tr>
+            <td>192.168.2.3</td>
+            <td>192.168.2.4</td>
+            <td>00:1B:2C:3D:4E:5F</td>
+            <td>00:1C:2D:3E:4F:5A</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}
+
+{% block body_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta24/dist/js/tabler.min.js"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+</script>
+{% endblock %}
+
+

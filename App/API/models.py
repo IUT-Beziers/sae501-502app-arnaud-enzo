@@ -7,8 +7,6 @@ class Packets(models.Model):
     dst_ip = models.CharField(max_length=15)
     src_mac = models.CharField(max_length=17)
     dst_mac = models.CharField(max_length=17)
-    src_port = models.IntegerField()
-    dst_port = models.IntegerField()
     data = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -19,7 +17,8 @@ class Agents(models.Model):
     id = models.AutoField(primary_key=True)
     agent_ip = models.CharField(max_length=15)
     agent_port = models.IntegerField()
+    agent_last_seen = models.DateTimeField(auto_now=True)
     data_count = models.FloatField()
 
     def __str__(self):
-        return self.agent_id + ' -> ' + self.agent_ip
+        return self.agent_id + ' -> ' + self.agent_ipy

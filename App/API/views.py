@@ -5,6 +5,8 @@ from API.models import Packets, Agents
 from API.serializers import GroupSerializer, UserSerializer, PacketsSerializer, AgentsSerializer
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework_api_key.permissions import HasAPIKey
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -28,7 +30,7 @@ class PacketsViewSet(viewsets.ModelViewSet):
     """
     queryset = Packets.objects.all().order_by('-timestamp')
     serializer_class = PacketsSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [HasAPIKey | permissions.IsAuthenticated]
 
     def POST(self, request):
         data = request.data

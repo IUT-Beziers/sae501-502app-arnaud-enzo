@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% include "dashboard/header.html" %}
+
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-body">
+
+                <h1> Gestion des agents </h1>
+
+                <br>
+
+                <h2> Ajouter un agent </h2>
+
+                <br>
+
+                <div> Pour ajouter un agent il vous suffit de cliquer sur le bouton ci dessous et de vous laisser guider. </div>
+
+                <a href="#" class="btn" role="button">ENZO METS TES TRUCS ICI</a>
+
+                <br>
+
+                <table id="myTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>Ip de l'agent</th>
+                            <th>Derniere connection</th>
+                            <th>Nombre de données envoyées</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>192.168.2.1</td>
+                            <td>192.168.2.2</td>
+                            <td>00:1A:2B:3C:4D:5E</td>
+
+                        </tr>
+                        <tr>
+                            <td>192.168.2.3</td>
+                            <td>192.168.2.4</td>
+                            <td>00:1B:2C:3D:4E:5F</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+   </div>
+  </div>
+ </div>
+</div>
+{% endblock %}
+
+{% block body_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.0.0-beta24/dist/js/tabler.min.js"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready( function () {
+        $('#myTable').DataTable();
+    } );
+</script>
+{% endblock %}

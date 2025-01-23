@@ -33,6 +33,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('', frontend_views.index),
-    path('home/',frontend_views.home)
+    path('', frontend_views.index, name="index"),
+    path('home/',frontend_views.home, name="home"),
+    path('agent/',frontend_views.agent, name="agent"),
+    path('settings/',frontend_views.settings, name="settings")
 ]

@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Group, User
-from API.models import Packets, Agents
+from API.models import APR_MITM, Agents
 from rest_framework import serializers
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,9 +12,9 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
         model = Group
         fields = ['url', 'name']
 
-class PacketsSerializer(serializers.HyperlinkedModelSerializer):
+class APR_MITMSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Packets
+        model = APR_MITM
         fields = ['src_ip', 'dst_ip', 'src_mac', 'dst_mac', 'data', 'timestamp']
 
 class AgentsSerializer(serializers.HyperlinkedModelSerializer):

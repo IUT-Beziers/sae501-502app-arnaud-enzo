@@ -1,8 +1,8 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import permissions, viewsets
-from API.models import Packets, Agents
+from API.models import APR_MITM, Agents
 
-from API.serializers import GroupSerializer, UserSerializer, PacketsSerializer, AgentsSerializer
+from API.serializers import GroupSerializer, UserSerializer, AgentsSerializer, APR_MITMSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework_api_key.permissions import HasAPIKey
@@ -28,13 +28,13 @@ class PacketsViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows packets to be viewed or edited.
     """
-    queryset = Packets.objects.all().order_by('-timestamp')
-    serializer_class = PacketsSerializer
+    queryset = APR_MITM.objects.all().order_by('-timestamp')
+    serializer_class = APR_MITMSerializer
     permission_classes = [HasAPIKey | permissions.IsAuthenticated]
 
     def POST(self, request):
         data = request.data
-        serializer = PacketsSerializer(data=data)
+        serializer = APR_MITMSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -42,7 +42,7 @@ class PacketsViewSet(viewsets.ModelViewSet):
 
     def GET(self, request):
         data = Packets.objects.all()
-        serializer = PacketsSerializer(data, many=True)
+        serializer = APR_MITMSerializer(data, many=True)
         return Response(serializer.data)
 
 class AgentsViewSet(viewsets.ModelViewSet):
@@ -65,3 +65,4 @@ class AgentsViewSet(viewsets.ModelViewSet):
         data = Agents.objects.all()
         serializer = AgentsSerializer(data, many=True)
         return Response(serializer.data)
+    

@@ -4,13 +4,17 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-        <a href="javascript:void(0)">
+        <a href="{% url 'home' %}">
           <h1> ALEDOSKOUR </h1>
         </a>
       </div>
       <ul class="navbar-nav">
+       {% if '/home/' in request.path %}
         <li class="nav-item active">
-          <a class="nav-link" href="javascript:void(0)">
+       {% else %}
+        <li class="nav-item">
+       {% endif %} 
+          <a class="nav-link" href="{% url 'home' %}">
             <span class="nav-link-icon">
               <!-- Download SVG icon from http://tabler.io/icons/icon/home -->
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-home">
@@ -25,8 +29,12 @@
             </span>
           </a>
         </li>
+        {% if '/agent/' in request.path %}
+        <li class="nav-item active">
+       {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)">
+       {% endif %} 
+          <a class="nav-link" href="{% url 'agent' %}">
             <span class="nav-link-icon"><!-- Download SVG icon from http://tabler.io/icons/icon/checkbox -->
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -39,8 +47,12 @@
             </span>
           </a>
         </li>
+        {% if '/settings/' in request.path %}
+        <li class="nav-item active">
+       {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0)">
+       {% endif %} 
+          <a class="nav-link" href="{% url 'settings' %}">
             <span class="nav-link-icon"><!-- Download SVG icon from http://tabler.io/icons/icon/checkbox -->
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
@@ -54,24 +66,7 @@
           </a>
         </li>
       </ul>
-      <div class="navbar-nav flex-row order-md-last ms-auto">
-        <div class="nav-item dropdown">
-          <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-            <span class="avatar avatar-sm" style="background-image: url(...)"></span>
-            <div class="d-none d-xl-block ps-2">
-              <div>Paweł Kuna</div>
-              <div class="mt-1 small text-secondary">UI Designer</div>
-            </div>
-          </a>
-          <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-            <a href="#" class="dropdown-item">Status</a>
-            <a href="./profile.html" class="dropdown-item">Profile</a>
-            <a href="#" class="dropdown-item">Feedback</a>
-            <div class="dropdown-divider"></div>
-            <a href="./settings.html" class="dropdown-item">Settings</a>
-            <a href="./sign-in.html" class="dropdown-item">Logout</a>
-          </div>
-        </div>
+      
       </div>
     </div>
   </header>

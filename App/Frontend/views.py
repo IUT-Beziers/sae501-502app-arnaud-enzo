@@ -6,3 +6,9 @@ def index(request):
 
 def home(request):
     return render(request, 'dashboard/home.html')
+
+def agent(request):
+    return render(request, 'dashboard/agent.html')
+
+def settings(request):
+    return render(request, 'dashboard/settings.html')

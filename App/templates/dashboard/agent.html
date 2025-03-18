@@ -19,37 +19,123 @@
                 <br>
 
                 <div> Pour ajouter un agent il vous suffit de cliquer sur le bouton ci dessous et de vous laisser guider. </div>
-
-                <a href="#" class="btn" role="button">ENZO METS TES TRUCS ICI</a>
+                <br>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Créer un nouvel agent
+                </button>
 
                 <br>
-
                 <table id="myTable" class="display">
                     <thead>
                         <tr>
-                            <th>Ip de l'agent</th>
-                            <th>Derniere connection</th>
-                            <th>Nombre de données envoyées</th>
+                            <th>Nom de l'agent</th>
+                            <th>Adresse IP</th>
+                            <th>Données échangées</th>
+                            <th>Dernière connexion</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for agent in agents %}
                         <tr>
-                            <td>192.168.2.1</td>
-                            <td>192.168.2.2</td>
-                            <td>00:1A:2B:3C:4D:5E</td>
-
+                            <td>{{ agent.agent_name }}</td>
+                            <td>{{ agent.agent_ip }}</td>
+                            <td>{{ agent.data_count }}</td>
+                            <td>{{ agent.agent_last_seen }}</td>
                         </tr>
-                        <tr>
-                            <td>192.168.2.3</td>
-                            <td>192.168.2.4</td>
-                            <td>00:1B:2C:3D:4E:5F</td>
-
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
-   </div>
-  </div>
- </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="exampleModal" tabindex="-1">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form id="agentForm" action="http://localhost/agent/" method="post">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nouveaux agents</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" class="form-control" name="agent_name" placeholder="EX : Mon super agent !" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Interface</label>
+                            <input type="text" class="form-control" name="example-text-input" placeholder="EX : eno1" />
+                        </div>
+                        <input type="hidden" name="data_count" value=0 />
+                        <input type="hidden" name="agent_ip" value="test" />
+                        <input type="hidden" name="action" value="create" />
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">Retour</a>
+                        <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal" onclick="document.getElementById('agentForm').submit();">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M12 5l0 14"></path>
+                                <path d="M5 12l14 0"></path>
+                            </svg>
+                            Créer un agent
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% if detail %}
+    <div class="modal" id="responseModal" tabindex="-1">
+        <div class="modal-dialog modal-sm" role="document">
+          <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-success"></div>
+            <div class="modal-body text-center py-4">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="icon mb-2 text-green icon-lg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                fill="none"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <circle cx="12" cy="12" r="9" />
+                <path d="M9 12l2 2l4 -4" />
+              </svg>
+              <h3>{{ detail }}</h3>
+              <div class="text-secondary">
+                <pre><code>{{ curl_command }}</code></pre>
+                <button class="btn btn-outline-primary mt-2" onclick="copyToClipboard('{{ curl_command }}')">Copier</button>
+              </div>
+            </div>
+            <script>
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    alert('Commande copiée dans le presse-papiers');
+                }, function(err) {
+                    console.error('Erreur lors de la copie: ', err);
+                });
+            }
+            </script>
+            <div class="modal-footer">
+              <div class="w-100">
+                <div class="row">
+                  <div class="col">
+                    <a href="#" class="btn btn-success w-100" data-bs-dismiss="modal"> OK </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -61,6 +147,13 @@
 <script>
     $(document).ready( function () {
         $('#myTable').DataTable();
-    } );
+    });
+
+    {% if detail %}
+    document.addEventListener("DOMContentLoaded", function () {
+        var myModal = new bootstrap.Modal(document.getElementById("responseModal"));
+        myModal.show();
+    });
+    {% endif %}
 </script>
 {% endblock %}

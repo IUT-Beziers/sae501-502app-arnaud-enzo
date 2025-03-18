@@ -4,6 +4,33 @@
 {% block content %}
 
 {% include "dashboard/header.html" %}
+<div class="page-body">
+    <div class="container-xl">
+        <div class="card">
+            <div class="card-body">
+                <h1>Attaques ARP</h1>
+                <table id="attaque" class="display">
+                    <thead>
+                        <tr>
+                            <th>source</th>
+                            <th>type d'attaque</th>
+                            <th>date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attack in attacks %}
+                        <tr>
+                            <td>{{ attack.source }}</td>
+                            <td>{{ attack.type }}</td>
+                            <td>{{ attack.timestamp }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="page-body">
     <div class="container-xl">
@@ -21,60 +48,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                        {% for packet in packets %}
                         <tr>
-                            <td>192.168.2.1</td>
-                            <td>192.168.2.2</td>
-                            <td>00:1A:2B:3C:4D:5E</td>
-                            <td>00:1F:2E:3D:4C:5B</td>
-                            <td>gfezfe</td>
+                            <td>{{ packet.src_ip }}</td>
+                            <td>{{ packet.dst_ip }}</td>
+                            <td>{{ packet.src_mac }}</td>
+                            <td>{{ packet.dst_mac }}</td>
+                            <td>{{ packet.timestamp }}</td>
                         </tr>
-                        <tr>
-                            <td>192.168.2.3</td>
-                            <td>192.168.2.4</td>
-                            <td>00:1B:2C:3D:4E:5F</td>
-                            <td>00:1C:2D:3E:4F:5A</td>
-                            <td>gfeqf</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="page-body">
-    <div class="container-xl">
-        <div class="card">
-            <div class="card-body">
-                <h1>Attaque ARP</h1>
-                <table id="attaque" class="display">
-                    <thead>
-                        <tr>
-                            <th>src_ip</th>
-                            <th>dst_ip</th>
-                            <th>src_mac</th>
-                            <th>dst_mac</th>
-                            <th>date</th>
-                            <th>type d'attaque</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>192.168.2.1</td>
-                            <td>192.168.2.2</td>
-                            <td>00:1A:2B:3C:4D:5E</td>
-                            <td>00:1F:2E:3D:4C:5B</td>
-                            <td>gfeqf</td>
-                            <td>ALEDOSKOUR</TD>
-                        </tr>
-                        <tr>
-                            <td>192.168.2.3</td>
-                            <td>192.168.2.4</td>
-                            <td>00:1B:2C:3D:4E:5F</td>
-                            <td>00:1C:2D:3E:4F:5A</td>
-                            <td>gfezfe</td>
-                            <td>ALEDOSKOUR</TD>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -93,8 +75,5 @@
         $('#myTable').DataTable();
         $('#attaque').DataTable();
     } );
-    
 </script>
 {% endblock %}
-
-

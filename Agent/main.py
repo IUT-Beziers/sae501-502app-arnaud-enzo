@@ -1,49 +1,87 @@
 import requests
 import time
-from scapy.all import sniff, ARP, Ether, IP, srp
+from scapy.all import sniff, ARP, get_if_list
+import ipaddress
+import logging
+from datetime import datetime
+from collections import deque
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+import argparse
 
-# Renseignez l'URL de l'API
-url = 'http://localhost:8000/api/packets/'
+# Configuration
+DEFAULT_API_URL = 'http://localhost:8000/api/packets/'
+DEFAULT_API_KEY = '5WH94tAY.pn4ZwthQ8Z68m4674b2ehcGShAuc4OIh'
+PACKET_BUFFER_SIZE = 100
 
-def mac(ipadd):
-    arp_request = ARP(pdst=ipadd)
-    br = Ether(dst="ff:ff:ff:ff:ff:ff")
-    arp_req_br = br / arp_request
-    answered, _ = srp(arp_req_br, timeout=5, 
-                       verbose=False)
-    if answered:
-        return answered[0][1].hwsrc
-    return None
+# Logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-def packet_callback(packet, session):
-    if packet.haslayer(ARP) and packet[ARP].op == 2:
-        # Comparaison des adresses MAC
+# Packet buffer
+packet_buffer = deque(maxlen=PACKET_BUFFER_SIZE)
 
-        announced_mac = packet[ARP].hwsrc
-        real_mac = mac(packet[ARP].psrc)
+def is_private_ip(ip):
+    return ipaddress.ip_address(ip).is_private
 
-        print(announced_mac + ' ' + real_mac)
-
-        if announced_mac != real_mac:
-            data = {
-                'src_ip': packet[ARP].psrc,
-                'dst_ip': packet[ARP].pdst,
-                'src_mac': announced_mac,
-                'dst_mac': packet[ARP].hwdst,
-                'timestamp': time.time()
-            }
-        session.post(url, json=data)
-
-def main():
+def create_session(api_key):
     session = requests.Session()
-    # Authentification vers l'API avec session
-    login_page = session.get('http://localhost:8000/api-auth/login/')
-    csrf_token = login_page.cookies['csrftoken']
-    api_key = 'QzCMaDju.d1tuKzqkl9zrCjUfn1TR6WHTEawFVRVz'
-    session.headers.update({'Authorization': 'Api-Key QzCMaDju.d1tuKzqkl9zrCjUfn1TR6WHTEawFVRVz'})
-    session.post('http://localhost:8000/api-auth/login/', data={'csrfmiddlewaretoken': csrf_token})
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retries)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    session.headers.update({'Authorization': f'Api-Key {api_key}'})
+    return session
 
-    sniff(prn=lambda packet: packet_callback(packet, session), iface='en7', store=0)
+def packet_callback(packet, session, api_url):
+    try:
+        if packet.haslayer(ARP):
+            src_ip = packet[ARP].psrc
+            dst_ip = packet[ARP].pdst
+            if is_private_ip(src_ip) and is_private_ip(dst_ip):
+                data = {
+                    'src_ip': src_ip,
+                    'dst_ip': dst_ip,
+                    'src_mac': packet[ARP].hwsrc,
+                    'dst_mac': packet[ARP].hwdst,
+                    'timestamp':  datetime.now().isoformat()
+                }
+                packet_buffer.append(data)
+                logger.info(f"Captured packet: {data}")
+
+                if len(packet_buffer) >= PACKET_BUFFER_SIZE:
+                    # send table with the packets list to the loggers
+                    packets_formated = []
+                    for packet in packet_buffer:
+                        packets_formated.append(f"src_ip: {packet['src_ip']}, dst_ip: {packet['dst_ip']}, src_mac: {packet['src_mac']}, dst_mac: {packet['dst_mac']}, timestamp: {packet['timestamp']}")
+                    logger.info(f"Sending {len(packet_buffer)} packets to the API: {packets_formated}")
+                    response = session.post(api_url, json=list(packet_buffer))
+                    response.raise_for_status()
+                    packet_buffer.clear()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error sending packet to API: {e}")
+
+def select_interface():
+    interfaces = get_if_list()
+    print("Available interfaces:")
+    for i, iface in enumerate(interfaces):
+        print(f"{i + 1}. {iface}")
+    choice = int(input("Select the interface number: ")) - 1
+    return interfaces[choice]
+
+def main(api_url, api_key, interface=None):
+    if not interface:
+        interface = select_interface()
+
+    session = create_session(api_key)
+    while True:
+        sniff(prn=lambda packet: packet_callback(packet, session, api_url), iface=interface, store=0, count=100, timeout=10)
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description="ARP Monitoring Agent")
+    parser.add_argument('--api-url', type=str, default=DEFAULT_API_URL, help="API endpoint URL")
+    parser.add_argument('--api-key', type=str, default=DEFAULT_API_KEY, help="API key for authentication")
+    parser.add_argument('--interface', type=str, help="Network interface to monitor")
+    args = parser.parse_args()
+
+    main(api_url=args.api_url, api_key=args.api_key, interface=args.interface)

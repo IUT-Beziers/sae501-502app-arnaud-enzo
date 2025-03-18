@@ -26,6 +26,7 @@ router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'packets', views.PacketsViewSet)
 router.register(r'agents', views.AgentsViewSet)
+router.register(r'analysis', views.AnalysisViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -36,5 +37,7 @@ urlpatterns = [
     path('', frontend_views.index, name="index"),
     path('home/',frontend_views.home, name="home"),
     path('agent/',frontend_views.agent, name="agent"),
-    path('settings/',frontend_views.settings, name="settings")
+    path('settings/',frontend_views.settings, name="settings"),
+    path('signout/',frontend_views.signout, name="signout"),
+    path('accounts/login/', frontend_views.index, name="index")
 ]

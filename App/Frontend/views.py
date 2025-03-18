@@ -51,9 +51,10 @@ def agent(request):
     if request.method == 'POST':
         agent_name = request.POST['agent_name']
         agent_ip = request.POST['agent_ip']
+        agent_interface = request.POST['agent_interface']
         data_count = 0
         action = "create"
-        agent_data = {'agent_name': agent_name, 'agent_ip': agent_ip, 'data_count': data_count, 'action': action}
+        agent_data = {'agent_name': agent_name, 'agent_ip': agent_ip, 'data_count': data_count, 'action': action, 'interface': agent_interface}
         response = requests.post('http://localhost:8000/api/agents/', data=agent_data)
         response_agents = requests.get('http://localhost:8000/api/agents/')
 

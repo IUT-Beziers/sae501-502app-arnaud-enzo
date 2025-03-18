@@ -184,7 +184,7 @@ class AgentsViewSet(viewsets.ModelViewSet):
                 app_fqdn = os.getenv('APP_FQDN', 'localhost')
                 scipt_url = os.getenv('SCRIPT_URL', 'http://localhost:8000/static/install-agent.sh')
                 curl_command = (
-                    f"curl -sSL http://{app_fqdn}/static/install-agent.sh | bash -s -- "
+                    f"curl -sSL http://{scipt_url}/static/install-agent.sh | bash -s -- "
                     f"--api-url \"http://{app_fqdn}/api/packets/\" "
                     f"--api-key \"{key}\" "
                     f"--interface \"{data.get('interface')}\""

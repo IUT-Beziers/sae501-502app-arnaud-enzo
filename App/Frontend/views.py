@@ -24,23 +24,28 @@ def index(request):
 
 @login_required
 def home(request):
-    response_packets = requests.get('http://localhost:8000/api/packets')
-    response_attacks = requests.get('http://localhost:8000/api/analysis')
+    try:
+        response_packets = requests.get('http://localhost:8000/api/packets')
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
+
+    try:
+        response_attacks = requests.get('http://localhost:8000/api/analysis')
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")
 
     if response_packets.status_code == 200 and response_attacks.status_code == 200:
         try:
-            ARPPackets = response_packets.json()["results"]
+            ARPPackets = response_packets.json()
         except:
             ARPPackets = []
         try:
-            Attacks = response_attacks.json()["results"]
+            Attacks = response_attacks.json()
         except:
             Attacks = []
     else:
         ARPPackets = []
         Attacks = []
-
-    print(Attacks)
 
     return render(request, 'dashboard/home.html', {'packets': ARPPackets, 'attacks': Attacks})
 

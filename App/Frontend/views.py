@@ -50,7 +50,7 @@ def agent(request):
 
     if request.method == 'POST':
         agent_name = request.POST['agent_name']
-        agent_ip = request.POST['agent_ip']
+        agent_ip = ""
         agent_interface = request.POST['agent_interface']
         data_count = 0
         action = "create"

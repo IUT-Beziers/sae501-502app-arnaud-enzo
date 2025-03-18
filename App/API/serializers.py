@@ -24,6 +24,7 @@ class AttacksSerializer(serializers.HyperlinkedModelSerializer):
 
 class AgentsSerializer(serializers.HyperlinkedModelSerializer):
     action = serializers.CharField(read_only=True)
+    interface = serializers.CharField(read_only=True)
     class Meta:
         model = Agents
         fields = ['agent_name', 'agent_ip', 'agent_last_seen', 'data_count', 'action', 'interface']

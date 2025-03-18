@@ -10,8 +10,8 @@ from requests.packages.urllib3.util.retry import Retry
 import argparse
 
 # Configuration
-DEFAULT_API_URL = 'http://localhost:8000/api/packets/'
-DEFAULT_API_KEY = '5WH94tAY.pn4ZwthQ8Z68m4674b2ehcGShAuc4OIh'
+DEFAULT_API_URL = ""
+DEFAULT_API_KEY = ""
 PACKET_BUFFER_SIZE = 100
 
 # Logging

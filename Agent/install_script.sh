@@ -38,7 +38,7 @@ pip install scapy requests ipaddress
 
 # Download the agent script
 echo "Downloading agent script..."
-curl -o arp_agent.py https://raw.githubusercontent.com/IUT-Beziers/sae501-502app-arnaud-enzo/refs/heads/main/Agent/install_script.sh
+curl -o arp_agent.py https://raw.githubusercontent.com/IUT-Beziers/sae501-502app-arnaud-enzo/refs/heads/main/Agent/arp_agent.py
 mv arp_agent.py /root/arp_agent.py
 chmod +x /root/arp_agent.py
 

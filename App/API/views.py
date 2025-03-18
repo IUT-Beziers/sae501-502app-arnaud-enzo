@@ -182,6 +182,7 @@ class AgentsViewSet(viewsets.ModelViewSet):
 
                 # Generate curl command for agent registration using APP_FQDN environment variable
                 app_fqdn = os.getenv('APP_FQDN', 'localhost')
+                scipt_url = os.getenv('SCRIPT_URL', 'http://localhost:8000/static/install-agent.sh')
                 curl_command = (
                     f"curl -sSL http://{app_fqdn}/static/install-agent.sh | bash -s -- "
                     f"--api-url \"http://{app_fqdn}/api/packets/\" "

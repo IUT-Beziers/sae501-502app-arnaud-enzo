@@ -34,7 +34,8 @@ else
     echo "Unsupported package manager"
     exit 1
 fi
-pip install scapy requests ipaddress
+
+apt install python3-scapy python3-requests -y
 
 # Download the agent script
 echo "Downloading agent script..."
@@ -60,6 +61,6 @@ EOF
 
 # Start the agent
 echo "Starting ARP agent..."
-systemctl daemon-reload
-systemctl enable arp-agent
-systemctl start arp-agent
+sudo systemctl daemon-reload
+sudo systemctl enable arp-agent
+sudo systemctl start arp-agent

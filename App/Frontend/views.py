@@ -50,13 +50,21 @@ def agent(request):
 
     if request.method == 'POST':
         agent_name = request.POST['agent_name']
-        agent_ip = ""
+        agent_ip = "N/A"
         agent_interface = request.POST['agent_interface']
         data_count = 0
         action = "create"
         agent_data = {'agent_name': agent_name, 'agent_ip': agent_ip, 'data_count': data_count, 'action': action, 'interface': agent_interface}
-        response = requests.post('http://localhost:8000/api/agents/', data=agent_data)
-        response_agents = requests.get('http://localhost:8000/api/agents/')
+
+        try:
+            response = requests.post('http://localhost:8000/api/agents/', data=agent_data)
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
+
+        try:
+            response_agents = requests.get('http://localhost:8000/api/agents/')
+        except requests.exceptions.RequestException as e:
+            print(f"An error occurred: {e}")
 
         if response.status_code == 201:
             try:

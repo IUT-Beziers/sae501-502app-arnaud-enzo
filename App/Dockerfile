@@ -11,7 +11,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 RUN pip install --upgrade pip
-COPY requirements.txt /app/
+COPY ./requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 FROM python:3.13.2-slim
@@ -30,6 +30,9 @@ COPY --chown=appuser:appuser . .
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
+
+# Create cron job for scheduled tasks every 10 minutes
+RUN echo "*/10 * * * * /usr/local/bin/python /app/manage.py processpackets >> /var/log/cron.log 2>&1" > /etc/cron.d/cronjob
 
 USER appuser
 EXPOSE 8000

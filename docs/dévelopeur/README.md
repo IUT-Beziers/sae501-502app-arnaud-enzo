@@ -1,4 +1,3 @@
-```markdown
 # Documentation Développeur
 
 ## Table des matières
@@ -137,4 +136,3 @@ Pour toute question ou problème, veuillez ouvrir une issue sur GitHub.
 
 ## Licence
 Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
-```

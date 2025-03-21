@@ -61,6 +61,7 @@ class PacketsViewSet(viewsets.ModelViewSet):
 
         # Check for duplicates
         if not self._is_duplicate_packet(src_mac, src_ip, dst_mac, dst_ip, timestamp):
+            # Update some agent data
             self.perform_create(serializer)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:

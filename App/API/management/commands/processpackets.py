@@ -4,6 +4,8 @@ from API.models import APRPackets, Attacks
 from datetime import timedelta
 from django.utils import timezone
 from collections import defaultdict
+import os
+import netifaces
 
 class Command(BaseCommand):
     help = "Process packets to detect ARP spam and ARP spoofing. (Run every 10 minutes with a cron job)"
@@ -30,7 +32,7 @@ def process_packets():
 
     # Detect ARP Flooding
     for mac, stats in statsForEachMac.items():
-        if stats[0] > 100:  # Threshold for ARP flood
+        if stats[0] > os.getenv('ARP_FLOOD_THRESHOLD', 100):
             attack = Attacks(type='ARP Flood', source=mac, timestamp=timezone.now())
             attack.save()
             for packet_id in stats[1]:
@@ -76,14 +78,22 @@ def getRealMac(ip):
 
 def getRealIPv4(mac):
     """
-    Send an ICMP (ping) request to find the real IPv4 address for a given MAC.
+    Find the real IPv4 address for a given MAC address using the ARP table.
     """
     try:
-        # Create an ICMP echo request packet
-        packet = Ether(dst=mac)/IP(dst="255.255.255.255")/ICMP()
-        response = sr1(packet, timeout=2, verbose=0)
-        if response and response.haslayer(IP):
-            return response[IP].src
+        # Get the network interface of the current machine
+        interfaces = netifaces.interfaces()
+        for interface in interfaces:
+            ifaddresses = netifaces.ifaddresses(interface)
+            if netifaces.AF_INET in ifaddresses:
+                ipv4_info = ifaddresses[netifaces.AF_INET][0]
+                network = ipv4_info['addr'] + '/' + ipv4_info['netmask']
+
+                # Use the ARP table to find the IP address for the given MAC address
+                arp_table = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=network), timeout=2, verbose=0)[0]
+                for _, r in arp_table:
+                    if r[Ether].src == mac:
+                        return r[ARP].psrc
     except Exception as e:
         print(f"Error getting real IPv4 for MAC {mac}: {e}")
     return None

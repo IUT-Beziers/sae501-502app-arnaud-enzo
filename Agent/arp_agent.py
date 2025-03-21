@@ -25,6 +25,9 @@ def is_private_ip(ip):
     return ipaddress.ip_address(ip).is_private
 
 def create_session(api_key):
+    """
+    Create a new requests session with retries.
+    """
     session = requests.Session()
     retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
     adapter = HTTPAdapter(max_retries=retries)
@@ -34,6 +37,9 @@ def create_session(api_key):
     return session
 
 def packet_callback(packet, session, api_url):
+    """
+    Callback function for sniffing packets, captures ARP packets and sends them to the API.
+    """
     try:
         if packet.haslayer(ARP):
             src_ip = packet[ARP].psrc
@@ -62,6 +68,9 @@ def packet_callback(packet, session, api_url):
         logger.error(f"Error sending packet to API: {e}")
 
 def select_interface():
+    """
+    Select a network interface for packet sniffing if not provided as an argument.
+    """
     interfaces = get_if_list()
     print("Available interfaces:")
     for i, iface in enumerate(interfaces):
@@ -70,6 +79,9 @@ def select_interface():
     return interfaces[choice]
 
 def main(api_url, api_key, interface=None):
+    """
+    Main function to start the ARP monitoring agent."
+    """
     if not interface:
         interface = select_interface()
 
